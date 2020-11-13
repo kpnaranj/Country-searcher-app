@@ -4,5 +4,5 @@ Running the project
 
 git clone https://github.com/kpnaranj/front-end-practice.git [project-name]
 
-yarn init 
-yarn dev
+--yarn init 
+--yarn dev
