@@ -1,0 +1,16 @@
+.overview__panel img{
+    width: 100%;
+    border-radius: 4px;
+}
+
+.overview__panel{
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    background-color: var(--background-color-light);
+}
+
+.overview__name{
+    text-align: center;
+    font-size:32px; 
+}
