@@ -1,5 +1,6 @@
 .heading {
     display: flex;
+    padding: 20px;
 }
 
 .heading button {
@@ -9,9 +10,13 @@
     cursor: pointer;
 }
 
-.heading__name, .heading__population {
+.heading__flag {
     flex: 1;
-    padding: 20px;
+    margin-right: 18px;
+}
+
+.heading__name, .heading__population, .heading__area, .heading__gini {
+    flex: 4;
     color: var(--text-color-secondary);
     font-weight: 500;
     display: flex;
@@ -49,10 +54,40 @@
 }
 
 .name {
-    flex: 1;
+    flex: 4;
     text-align: left;
 }
 
 .population {
+    flex: 4;
+}
+
+.area {
+    flex: 4;
+}
+
+.gini {
+    flex: 4;
+}
+
+.flag {
     flex: 1;
+    margin-right: 16px;
+}
+
+.flag img {
+    border-radius: 2px;
+    width: 100%;
+}
+
+@media screen and (max-width: 720px) {
+    .area, .heading__area {
+        display: none;
+    }
+    .gini , .heading__gini{
+        display: none;
+    }
+    .flag, .heading__flag{
+        display: none;
+    }
 }

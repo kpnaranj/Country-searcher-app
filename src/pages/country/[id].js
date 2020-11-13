@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import styles from "./Country.module.css";
 
@@ -6,6 +6,7 @@ const getCountry = async (id) => {
   const res = await fetch(`https://restcountries.eu/rest/v2/alpha/${id}`);
 
   const country = await res.json();
+
   return country;
 };
 
@@ -16,89 +17,98 @@ const Country = ({ country }) => {
     const borders = await Promise.all(
       country.borders.map((border) => getCountry(border))
     );
+
     setBorders(borders);
   };
-
+//every time the website is 
+//rerended this function will 
+//be called
   useEffect(() => {
     getBorders();
   }, []);
+  //if I don't add anything, then
+  //it mounts only when it renders
+  //whenever the values change this will
+  //be recalled
+  //values that depends on
+  //if I add something inside it will 
+  //rerender once I changed something
+
+  console.log(borders);
 
   return (
     <Layout title={country.name}>
       <div className={styles.container}>
-        <div className={styles.container__left}>
-          <div className={styles.overview__panel}>
-            <img src={country.flag} alt={country.name} />
+        <div className={styles.container_left}>
+          <div className={styles.overview_panel}>
+            <img src={country.flag} alt={country.name}></img>
 
-            <h1 className={styles.overview__name}>{country.name}</h1>
-            <div className={styles.overview__region}>{country.region}</div>
+            <h1 className={styles.overview_name}>{country.name}</h1>
+            <div className={styles.overview_region}>{country.region}</div>
 
-            <div className={styles.overview__numbers}>
-              <div className={styles.overview__population}>
-                <div className={styles.overview__value}>
+            <div className={styles.overview_numbers}>
+              <div className={styles.overview_population}>
+                <div className={styles.overview_value}>
                   {country.population}
                 </div>
-                <div className={styles.overview__label}>Population</div>
+                <div className={styles.overview_label}>Population</div>
               </div>
 
-              <div className={styles.overview__area}>
-                <div className={styles.overview__value}>{country.area}</div>
-                <div className={styles.overview__label}>Area</div>
+              <div className={styles.overview_area}>
+                <div className={styles.overview_value}>{country.area}</div>
+                <div className={styles.overview_label}>Area</div>
               </div>
             </div>
           </div>
         </div>
-        <div className={styles.container__right}>
-          <div className={styles.details__panel}>
-            <h4 className={styles.details__panel__heading}>Details</h4>
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Capital</div>
-              <div className={styles.details__panel__value}>
+        <div className={styles.container_right}>
+          <div className={styles.details_panel}>
+            <h4 className={styles.details_panel_heading}>Details</h4>
+
+            <div className={styles.details_panel_row}>
+              <div className={styles.details_panel_label}>Capital</div>
+              <div className={styles.details_panel_value}>
                 {country.capital}
               </div>
             </div>
 
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Languages</div>
-              <div className={styles.details__panel__value}>
+            <div className={styles.details_panel_row}>
+              <div className={styles.details_panel_label}>Languages</div>
+              <div className={styles.details_panel_value}>
                 {country.languages.map(({ name }) => name).join(", ")}
               </div>
             </div>
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Subregion</div>
-              <div className={styles.details__panel__value}>
-                {country.subregion}
-              </div>
-            </div>
 
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Currency</div>
-              <div className={styles.details__panel__value}>
+            <div className={styles.details_panel_row}>
+              <div className={styles.details_panel_label}>Currencies</div>
+              <div className={styles.details_panel_value}>
                 {country.currencies.map(({ name }) => name).join(", ")}
               </div>
             </div>
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Native name</div>
-              <div className={styles.details__panel__value}>
+
+            <div className={styles.details_panel_row}>
+              <div className={styles.details_panel_label}>Native name</div>
+              <div className={styles.details_panel_value}>
                 {country.nativeName}
               </div>
             </div>
-            <div className={styles.details__panel__row}>
-              <div className={styles.details__panel__label}>Gini</div>
-              <div className={styles.details__panel__value}>
-                {country.gini} %
-              </div>
+
+            <div className={styles.details_panel_row}>
+              <div className={styles.details_panel_label}>Gini</div>
+              <div className={styles.details_panel_value}>{country.gini} %</div>
             </div>
 
-            <div className={styles.details__panel__borders}>
-              <div className={styles.details__panel__label}>
+            <div className={styles.details_panel_borders}>
+              <div className={styles.details_panel_borders_label}>
                 Neighbouring Countries
               </div>
-              <div className={styles.details__panel__container}>
+
+              <div className={styles.details_panel_borders_container}>
                 {borders.map(({ flag, name }) => (
-                  <div className={styles.details__panel__borders__country}>
-                    <img src={flag} alt={name} />
-                    <div className={styles.details__panel__borders__name}>
+                  <div className={styles.details_panel_borders_country}>
+                    <img src={flag} alt={name}></img>
+
+                    <div className={styles.details_panel_borders_name}>
                       {name}
                     </div>
                   </div>
@@ -114,9 +124,26 @@ const Country = ({ country }) => {
 
 export default Country;
 
-export const getServerSideProps = async ({ params }) => {
-  const country = await getCountry(params.id);
+export const getStaticPaths = async () => {
+  const res = await fetch("https://restcountries.eu/rest/v2/all");
+  const countries = await res.json();
+
+  const paths = countries.map((country) => ({
+    params: { id: country.alpha3Code },
+  }));
+
   return {
-    props: { country },
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps = async ({ params }) => {
+  const country = await getCountry(params.id);
+
+  return {
+    props: {
+      country,
+    },
   };
 };
